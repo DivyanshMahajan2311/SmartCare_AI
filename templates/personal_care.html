@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<section id="personal-care" class="active">
+    <h2 style="margin-bottom: 20px;">Your Personal Care</h2>
+    <div class="care-grid">
+        <!-- Depression card now links to the new page -->
+        <a href="{{ url_for('depression_detection') }}" style="text-decoration:none; color:inherit;">
+            <div class="care-card">
+                <h3>Depression Detection in Teens</h3>
+                <p>Detetcting the level of Depression in Teens.</p>
+            </div>
+        </a>        
+        <a href="{{ url_for('peer_pressure') }}" style="text-decoration:none; color:inherit;">
+            <div class="care-card">
+                <h3>Peer Pressure/School Pressure</h3>
+                <p>Problems of Peers, related to school along with.</p>
+            </div>
+        </a>
+
+        <!-- Updated Emotion Detection card -->
+        <a href="{{ url_for('face_emotion') }}" style="text-decoration:none; color:inherit;">
+            <div class="care-card" id="emotion-card">
+                <h3>Emotion Detection through Face</h3>
+                <p>Detecting emotion of Teens through its Facial Expressions.</p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('pcos_pcod') }}" style="text-decoration:none; color:inherit;">
+            <div class="care-card">
+                <h3>Reproductive Problem - PCOS/PCOD</h3>
+                <p>For PCOS Problem in Female Teens.</p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('smartcare') }}" style="text-decoration:none; color:inherit;">
+            <div style="Width: 500px;" class="care-card">
+                <h3>Personalized HealthCare Tracker for Teen People</h3>
+                <p>An Integrated Smart HealthCare Support System for Teen People.</p>
+            </div>
+        </a>
+    </div>
+</section>
+
+<script>
+// ----------------- Emotion Card Toggle (kept on this page) -----------------
+const emotionCard = document.getElementById('emotion-card');
+if(emotionCard){
+    emotionCard.addEventListener('click', (e) => {
+        // prevent clicks on the option buttons from bubbling and re-toggling
+        if(e.target && e.target.classList.contains('emotion-option-btn')) return;
+        emotionCard.classList.toggle('open');
+        // smoothly scroll into view when opened
+        if(emotionCard.classList.contains('open')) emotionCard.scrollIntoView({behavior: 'smooth', block: 'center'});
+    });
+
+    // Add handlers for the option buttons (currently just show a brief visual feedback)
+    const optionButtons = emotionCard.querySelectorAll('.emotion-option-btn');
+    optionButtons.forEach(btn => {
+        btn.addEventListener('click', (ev) => {
+            ev.stopPropagation(); // don't toggle the card
+            const method = btn.getAttribute('data-method');
+            // For now, we only show a temporary UI feedback — replace with real navigation later.
+            btn.innerText = 'Selected ✓ ' + btn.innerText;
+            setTimeout(() => {
+                const label = method === 'face' ? 'Emotion by Face' : method === 'audio' ? 'Emotion by Audio' : 'Emotion by Text (MCQs)';
+                btn.innerText = label;
+            }, 1200);
+        });
+    });
+}
+</script>
+{% endblock %}

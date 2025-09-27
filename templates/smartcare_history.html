@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section id="smartcare-history" class="active">
+    <h2>Your SmartCare History</h2>
+    <p>All saved entries for <strong>{{ username }}</strong>.</p>
+
+    <div style="margin-top:12px; margin-bottom:12px;">
+        <a href="{{ url_for('smartcare') }}" style="padding:8px 12px; background:#eee; border-radius:8px; text-decoration:none;">← Back</a>
+        <a href="{{ url_for('smartcare_history') }}?download=1" style="padding:8px 12px; background:#ffd966; color:#000; border-radius:8px; text-decoration:none; margin-left:8px;">Download CSV</a>
+    </div>
+
+    <table style="width:100%; border-collapse:collapse; background:rgba(255,255,255,0.95);">
+        <thead>
+            <tr style="text-align:left; border-bottom:2px solid rgba(0,0,0,0.08);">
+                <th style="padding:8px;">Date</th>
+                <th style="padding:8px;">Height (cm)</th>
+                <th style="padding:8px;">Weight (kg)</th>
+                <th style="padding:8px;">BMI</th>
+                <th style="padding:8px;">Cycle (days)</th>
+                <th style="padding:8px;">Mood</th>
+                <th style="padding:8px;">Sleep</th>
+                <th style="padding:8px;">Symptoms</th>
+                <th style="padding:8px;">Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in records %}
+            <tr style="border-bottom:1px solid rgba(0,0,0,0.05);">
+                <td style="padding:8px;">{{ r.date }}</td>
+                <td style="padding:8px;">{{ r.height_cm }}</td>
+                <td style="padding:8px;">{{ r.weight_kg }}</td>
+                <td style="padding:8px;">{{ r.bmi }}</td>
+                <td style="padding:8px;">{{ r.cycle_length_days }}</td>
+                <td style="padding:8px;">{{ r.mood }}</td>
+                <td style="padding:8px;">{{ r.sleep_hours }}</td>
+                <td style="padding:8px;">{{ r.symptoms }}</td>
+                <td style="padding:8px;">{{ r.notes }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

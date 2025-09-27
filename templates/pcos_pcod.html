@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block content %}
+<section id="reproductive-problems" class="active">
+    <h2>Reproductive Problems — PCOS/PCOD Prediction</h2>
+    <p>Enter your details below. This tool gives an informational estimate and is not a medical diagnosis.</p>
+
+    {% if not model_loaded %}
+    <div style="margin-top:12px; background: rgba(255,255,255,0.95); padding:12px; border-radius:10px; box-shadow:0 6px 14px rgba(0,0,0,0.06);">
+        <strong style="color:#d64579;">Model not loaded:</strong>
+        <div style="margin-top:6px; color:#555;">The prediction model or scaler is not available on the server. Place <code>pcos_svm_model.pkl</code> and <code>pcos_scaler.pkl</code> in the app folder.</div>
+        {% if error %}
+        <div style="margin-top:8px; color:#b22;">{{ error }}</div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <form method="post" style="margin-top:18px;">
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:220px;">
+                <label><strong>Age</strong></label>
+                <input type="number" name="Age" min="13" max="18" value="{{ form_vals.Age }}" style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+            </div>
+
+            <div style="flex:1; min-width:220px;">
+                <label><strong>Weight (kg)</strong></label>
+                <input type="number" name="Weight" min="30" max="90" step="0.1" value="{{ form_vals.Weight }}" id="weight-input" style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+            </div>
+
+            <div style="flex:1; min-width:220px;">
+                <label><strong>Height (cm)</strong></label>
+                <input type="number" name="Height" min="100" max="220" step="0.1" value="{{ form_vals.Height }}" id="height-input" style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+            </div>
+
+            <div style="flex:1; min-width:220px;">
+                <label><strong>Calculated BMI</strong></label>
+                <input type="text" name="BMI" id="bmi-display" readonly value="{{ form_vals.BMI }}" style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6; background:#fff0f7;">
+            </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:12px; flex-wrap:wrap;">
+            <div style="min-width:220px;">
+                <label><strong>Cycle Regularity</strong></label><br>
+                <select name="Cycle" style="padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                    <option value="Regular" {% if form_vals.Cycle == 'Regular' %}selected{% endif %}>Regular</option>
+                    <option value="Irregular" {% if form_vals.Cycle == 'Irregular' %}selected{% endif %}>Irregular</option>
+                </select>
+            </div>
+
+            <div style="min-width:220px;">
+                <label><strong>Weight Gain</strong></label><br>
+                <select name="Weight_gain" style="padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                    <option value="Yes" {% if form_vals.Weight_gain == 'Yes' %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if form_vals.Weight_gain == 'No' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+
+            <div style="min-width:220px;">
+                <label><strong>Excess Hair Growth</strong></label><br>
+                <select name="Hair_growth" style="padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                    <option value="Yes" {% if form_vals.Hair_growth == 'Yes' %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if form_vals.Hair_growth == 'No' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+
+            <div style="min-width:220px;">
+                <label><strong>Skin Darkening</strong></label><br>
+                <select name="Skin_darkening" style="padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                    <option value="Yes" {% if form_vals.Skin_darkening == 'Yes' %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if form_vals.Skin_darkening == 'No' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:12px; flex-wrap:wrap;">
+            <div style="min-width:220px;">
+                <label><strong>Hair Loss</strong></label><br>
+                <select name="Hair_loss" style="padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                    <option value="Yes" {% if form_vals.Hair_loss == 'Yes' %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if form_vals.Hair_loss == 'No' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+
+            <div style="min-width:220px;">
+                <label><strong>Acne / Pimples</strong></label><br>
+                <select name="Pimples" style="padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                    <option value="Yes" {% if form_vals.Pimples == 'Yes' %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if form_vals.Pimples == 'No' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+
+            <div style="min-width:220px;">
+                <label><strong>Frequent Fast Food Intake</strong></label><br>
+                <select name="Fast_food" style="padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                    <option value="Yes" {% if form_vals.Fast_food == 'Yes' %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if form_vals.Fast_food == 'No' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+
+            <div style="min-width:220px;">
+                <label><strong>Regular Exercise</strong></label><br>
+                <select name="Exercise" style="padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                    <option value="Yes" {% if form_vals.Exercise == 'Yes' %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if form_vals.Exercise == 'No' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top:16px;">
+            <button type="submit" style="padding:10px 16px; border-radius:12px; border:none; cursor:pointer; background:#ff6ec7; color:#fff; font-weight:700;">
+                Predict PCOS/PCOD Risk
+            </button>
+        </div>
+    </form>
+
+    {% if result_label %}
+    <div style="margin-top:20px; background: rgba(255,255,255,0.95); padding:16px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.12);">
+        <h3>Prediction</h3>
+        <p><strong>Result:</strong> {{ result_label }}</p>
+        {% if result_prob is not none %}
+        <p><strong>Probability:</strong> {{ "%.2f"|format(result_prob*100) }}%</p>
+        {% endif %}
+        <p style="margin-top:8px;"><strong>Note:</strong> This is for informational purposes only. Consult a healthcare professional for medical advice.</p>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div style="margin-top:12px; color:#b22;">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+</section>
+
+<script>
+// Live BMI calculation to match Streamlit behavior
+function computeBMI() {
+    const w = parseFloat(document.getElementById('weight-input').value) || 0;
+    const h = parseFloat(document.getElementById('height-input').value) || 0;
+    const bmiField = document.getElementById('bmi-display');
+    if(h > 0) {
+        const bmi = (w / ((h/100)**2)).toFixed(2);
+        bmiField.value = bmi;
+    } else {
+        bmiField.value = '';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    computeBMI();
+    document.getElementById('weight-input').addEventListener('input', computeBMI);
+    document.getElementById('height-input').addEventListener('input', computeBMI);
+});
+</script>
+{% endblock %}

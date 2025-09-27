@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section id="smartcare" class="active">
+    <div style="display:flex; gap:18px; flex-wrap:wrap; align-items:flex-start;">
+
+        <!-- LEFT COLUMN: Auth Cards + Quick Actions -->
+        <div style="width:360px; min-width:300px;">
+            <div class="care-card" style="padding:25px; height:auto; width: 500px;">
+                <h3 style="margin-bottom:8px;">Account</h3>
+
+                <!-- If signed in -->
+                {% if username and username != 'Guest' %}
+                <div style="background: #e6fff3; padding:12px; border-radius:8px; margin-bottom:10px;">
+                    <strong>Signed in as</strong>
+                    <div style="margin-top:8px; font-weight:700;">{{ username }}</div>
+                    <div style="margin-top:10px;">
+                        <a href="{{ url_for('smartcare_logout') }}"
+                            style="padding:8px 12px; background:#ffd966; color:#ff3b9f; border-radius:8px; text-decoration:none;">Logout</a>
+                        <a href="{{ url_for('smartcare_history') }}"
+                            style="padding:8px 12px; margin-left:8px; background:#ffb3e6; color:#000; border-radius:8px; text-decoration:none;">View
+                            History</a>
+                    </div>
+                </div>
+                {% endif %}
+
+                <br>
+
+                <!-- Signup -->
+                <form action="{{ url_for('smartcare_signup') }}" method="post" style="margin-bottom:12px;">
+                    <strong>Create account</strong>
+                    <div style="margin-top:8px;"><input name="su_user" placeholder="Username"
+                            style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;"></div>
+                    <div style="margin-top:8px;"><input name="su_email" placeholder="Email (optional)"
+                            style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;"></div>
+                    <div style="margin-top:8px;"><input name="su_pass" placeholder="Password" type="password"
+                            style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;"></div>
+                    <div style="margin-top:10px;"><button type="submit"
+                            style="padding:10px 14px; background:#ff6ec7; color:white; border:none; border-radius:8px;">Create</button>
+                    </div>
+                </form>
+                <br>
+                <!-- Login -->
+                <form action="{{ url_for('smartcare_login') }}" method="post" style="margin-bottom:12px;">
+                    <strong>Login</strong>
+                    <div style="margin-top:8px;"><input name="li_user" placeholder="Username"
+                            style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;"></div>
+                    <div style="margin-top:8px;"><input name="li_pass" placeholder="Password" type="password"
+                            style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;"></div>
+                    <div style="margin-top:10px;"><button type="submit"
+                            style="padding:10px 14px; background:#ffd966; color:#ff3b9f; border:none; border-radius:8px;">Login</button>
+                    </div>
+                </form>
+                <br>
+                <!-- Guest -->
+                <form action="{{ url_for('smartcare_guest') }}" method="post">
+                    <strong>Continue as Guest</strong>
+                    <div style="margin-top:8px;">You will save data locally as Guest.</div>
+                    <div style="margin-top:8px;"><button type="submit"
+                            style="padding:8px 12px; background:#fff0f7; color:#000; border-radius:8px; border:2px solid #ffb3e6;">Continue
+                            as Guest</button></div>
+                </form>
+            </div>
+
+            <!-- Quick links / tips card -->
+            <div class="care-card" style="margin-top:14px; padding:30px; width:500px; height:auto; background:purple; color:white;">
+                <h4 style="color:yellow; margin-bottom:6px;">Quick Tips</h4>
+                <ul style="margin-top:8px; line-height:1.6;">
+                    <li>Track periods and symptoms daily for better insights.</li>
+                    <li>Save entries to your account to view trends over time.</li>
+                    <li>Use the Symptom Checker for guidance — not diagnosis.</li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- RIGHT COLUMN: Save Record Form + Symptom Checker -->
+        <div style="display:flex; min-width:320px; gap:40px;">
+
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div style="margin-bottom:12px;">
+                {% for m in messages %}
+                <div style="background:#e7ffef; padding:10px; border-radius:8px; margin-bottom:8px;">{{ m }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div style="display:flex; gap:15px;">
+
+                <!-- Save Record Form -->
+                <div class="care-card" style="padding:18px; height: 450px; width: 550px;">
+                    <h3 style="margin-bottom:8px;">📊 Personal Health Entry</h3>
+                    <form method="post" style="display:block;">
+                        <input type="hidden" name="action" value="save_record">
+
+                        <div
+                            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+                            <div>
+                                <label><strong>Height (cm)</strong></label><br>
+                                <input type="number" step="0.1" name="height"
+                                    style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                            </div>
+                            <div>
+                                <label><strong>Weight (kg)</strong></label><br>
+                                <input type="number" step="0.1" name="weight"
+                                    style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                            </div>
+                            <div>
+                                <label><strong>Cycle length (days)</strong></label><br>
+                                <input type="number" name="cycle_length"
+                                    style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                            </div>
+                            <div>
+                                <label><strong>Mood</strong></label><br>
+                                <select name="mood"
+                                    style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                                    <option>Happy</option>
+                                    <option>Sad</option>
+                                    <option>Stressed</option>
+                                    <option>Tired</option>
+                                    <option>Neutral</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label><strong>Sleep hours</strong></label><br>
+                                <input type="number" step="0.5" name="sleep_hours"
+                                    style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                            </div>
+                            <div>
+                                <label><strong>Symptoms (comma separated)</strong></label><br>
+                                <input type="text" name="symptoms" placeholder="e.g. acne, irregular periods"
+                                    style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;">
+                            </div>
+                        </div>
+
+                        <div style="margin-top:12px;">
+                            <label><strong>Notes</strong></label><br>
+                            <textarea name="notes" rows="3"
+                                style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;"></textarea>
+                        </div>
+
+                        <div style="margin-top:12px; display:flex; gap:10px;">
+                            <button type="submit"
+                                style="padding:10px 16px; background:#ff6ec7; color:white; border:none; border-radius:10px;">Save
+                                Record</button>
+                            <a href="{{ url_for('smartcare_history') }}" class="emotion-option-btn"
+                                style="display:inline-block; text-decoration:none; line-height:28px;">View History</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Symptom Checker -->
+                <div class="care-card" style="margin-top:14px; padding:18px; height: 500px; width: 400px;">
+                    <h3 style="margin-bottom:8px;">🩺 Symptom Checker</h3>
+                    <p style="margin-bottom:10px;">Select symptoms (checkboxes) or type them in the box, then click
+                        <strong>Analyze Symptoms</strong>. This tool provides educational guidance — it is not a
+                        diagnosis.
+                    </p>
+
+                    <form method="post">
+                        <input type="hidden" name="action" value="analyze_symptoms">
+
+                        <div
+                            style="max-height:220px; overflow:auto; padding:8px; border-radius:10px; border:2px dashed #ffd6f0;">
+                            <div
+                                style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:8px;">
+                                {% for s in all_symptoms %}
+                                <label style="display:block; padding:6px;">
+                                    <input type="checkbox" name="symptoms_multi" value="{{ s }}" {% if selected_symptoms
+                                        and (s in selected_symptoms) %} checked {% endif %}>
+                                    {{ s }}
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div style="margin-top:10px;">
+                            <label><strong>Or enter symptoms (comma separated)</strong></label><br>
+                            <input type="text" name="symptoms" placeholder="e.g. acne, irregular periods"
+                                style="width:100%; padding:8px; border-radius:8px; border:2px solid #ffb3e6;"
+                                value="{% if selected_symptoms %}{{ selected_symptoms|join(', ') }}{% endif %}">
+                        </div>
+
+                        <div style="margin-top:12px;">
+                            <button type="submit"
+                                style="padding:10px 16px; background:#ffd966; color:#ff3b9f; border:none; border-radius:10px;">Analyze
+                                Symptoms</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div style="background-color: #ffc880; padding: 20px; height: auto; border-radius: 10px;">
+
+                <!-- Results area -->
+                {% if analysis_results %}
+                <div>
+                    <h4 style="margin:15px;">Possible conditions (ranked)</h4>
+                    {% for cond, info in analysis_results %}
+                    <div style="background:#fff0fb; padding:12px; border-radius:10px; margin-bottom:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <strong style="font-size:1.05rem;">{{ cond }}</strong>
+                            <div style="font-weight:700; color:#ff3b9f;">{{ (info['score'] * 100) | round(0) }}%
+                            </div>
+                        </div>
+                        <div style="margin-top:6px;">
+                            <em>Matched symptoms:</em> {{ info['matched']|join(', ') }}
+                        </div>
+                        <div style="margin-top:8px; padding:8px; background:white; border-radius:8px;">
+                            {{ info['advice'] }}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% if doctor_recs %}
+                    <h4 style="margin:15px;">Recommended specialists / clinics</h4>
+                    <div style="display:grid; gap:8px;">
+                        {% for d in doctor_recs %}
+                        <div style="background:#fff; padding:10px; border-radius:8px; border:1px solid #ffe6f2;">
+                            <strong>{{ d['name'] }}</strong> — {{ d['specialty'] }}<br>
+                            <small>{{ d['clinic'] }} • {{ d['phone'] }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+
+<!-- <hr style="margin:18px 0;">
+
+<section style="background: rgba(255,255,255,0.95); padding:14px; border-radius:10px; margin-top:12px;">
+    <h3>Symptom Checker</h3>
+    <p>Select symptoms you are experiencing (or enter comma-separated symptoms), then click <strong>Analyze</strong>. This is educational — not a diagnosis.</p>
+
+    <form method="post" style="margin-bottom:10px;">
+        <input type="hidden" name="action" value="analyze_symptoms">
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:8px; max-height:240px; overflow:auto; padding:6px; border:1px dashed #ffd6f0; border-radius:8px;">
+            {% for s in all_symptoms %}
+            <label style="display:block; padding:6px;">
+                <input type="checkbox" name="symptoms_multi" value="{{ s }}"
+                    {% if selected_symptoms and (s in selected_symptoms) %} checked {% endif %}>
+                {{ s }}
+            </label>
+            {% endfor %}
+        </div>
+
+        <div style="margin-top:10px;">
+            <label><strong>Or enter symptoms (comma separated)</strong></label><br>
+            <input type="text" name="symptoms" placeholder="e.g. acne, irregular periods" style="width:100%; padding:8px; border:2px solid #ffb3e6; border-radius:8px;"
+                   value="{% if selected_symptoms %}{{ selected_symptoms|join(', ') }}{% endif %}">
+        </div>
+
+        <div style="margin-top:12px;">
+            <button type="submit" style="padding:10px 16px; background:#ff6ec7; color:#fff; border:none; border-radius:10px;">Analyze Symptoms</button>
+        </div>
+    </form>
+
+    {% if analysis_results %}
+    <div style="margin-top:16px; border-top:1px solid #eee; padding-top:12px;">
+        <h4>Possible conditions (ranked)</h4>
+        {% for cond, info in analysis_results %}
+            <div style="background:#fff0fb; padding:10px; border-radius:8px; margin-bottom:8px;">
+                <strong>{{ cond }}</strong> — Confidence: {{ (info['score'] * 100) | round(0) }}%<br>
+                <em>Matched symptoms:</em> {{ info['matched']|join(', ') }}<br>
+                <div style="margin-top:6px; padding:8px; background:#fff; border-radius:6px;">{{ info['advice'] }}</div>
+            </div>
+        {% endfor %}
+
+        {% if doctor_recs %}
+        <h4 style="margin-top:10px;">Recommended specialists / clinics</h4>
+        <ul>
+            {% for d in doctor_recs %}
+            <li><strong>{{ d.name }}</strong> — {{ d.specialty }} — {{ d.clinic }} — {{ d.phone }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    {% endif %}
+</section> -->

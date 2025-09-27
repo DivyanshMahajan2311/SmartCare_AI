@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block content %}
+<section id="peer-pressure" class="active">
+    <h2>Peer Pressure / School Pressure</h2>
+    <p>Answer the following honestly. Choose 0–3 for each question, and describe your feelings in the text box (optional).</p>
+
+    <form method="post" id="peer-form" style="margin-top:18px;">
+        <h3 style="margin-top: 6px;">Academic Stress Questions</h3>
+        {% for q in academic_questions %}
+        {% set idx = loop.index %}
+        <div style="background: rgba(255,255,255,0.95); padding:12px; border-radius:10px; margin-bottom:12px; box-shadow: 0 6px 14px rgba(0,0,0,0.08);">
+            <strong>{{ q }}</strong>
+            <div style="margin-top:8px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <input type="range" name="a{{ idx }}" min="0" max="3" step="1" value="0"
+                    class="academic-slider" id="a{{ idx }}-slider" />
+                <div style="min-width:120px; display:flex; gap:12px; align-items:center;">
+                    <div>Value: <span id="a{{ idx }}-val">0</span></div>
+                    <div style="font-size:0.9rem; color:#666;">(0 Not at all — 3 Nearly every day)</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div style="margin-bottom:14px;">
+            <strong>Academic Stress Score: </strong>
+            <span id="academic-total">0</span> / {{ (academic_questions|length * 3) }}
+        </div>
+
+        <h3 style="margin-top: 6px;">Peer Pressure Questions</h3>
+        {% for q in peer_questions %}
+        {% set pidx = loop.index %}
+        <div style="background: rgba(255,255,255,0.95); padding:12px; border-radius:10px; margin-bottom:12px; box-shadow: 0 6px 14px rgba(0,0,0,0.08);">
+            <strong>{{ q }}</strong>
+            <div style="margin-top:8px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <input type="range" name="p{{ pidx }}" min="0" max="3" step="1" value="0"
+                    class="peer-slider" id="p{{ pidx }}-slider" />
+                <div style="min-width:120px; display:flex; gap:12px; align-items:center;">
+                    <div>Value: <span id="p{{ pidx }}-val">0</span></div>
+                    <div style="font-size:0.9rem; color:#666;">(0 Not at all — 3 Nearly every day)</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div style="margin-bottom:14px;">
+            <strong>Peer Pressure Score: </strong>
+            <span id="peer-total">0</span> / {{ (peer_questions|length * 3) }}
+        </div>
+
+        <h3 style="margin-top:6px;">Describe Your Feelings (optional)</h3>
+        <textarea name="user_text" rows="5" style="width:100%; padding:10px; border-radius:8px; border:2px solid #ffb3e6;"></textarea>
+
+        <div style="margin-top:12px;">
+            <button type="submit" style="padding:10px 16px; border-radius:12px; border:none; cursor:pointer; background:#ff6ec7; color:#fff; font-weight:700;">
+                Analyze Pressure
+            </button>
+        </div>
+    </form>
+
+    <script>
+    // Update slider value labels and running totals
+    function updateTotals() {
+        // academic sliders
+        const aSliders = document.querySelectorAll('.academic-slider');
+        let aTotal = 0;
+        aSliders.forEach(s => {
+            const val = parseInt(s.value) || 0;
+            const id = s.id.replace('-slider','');
+            const label = document.getElementById(id + '-val');
+            if(label) label.innerText = val;
+            aTotal += val;
+        });
+        document.getElementById('academic-total').innerText = aTotal;
+
+        // peer sliders
+        const pSliders = document.querySelectorAll('.peer-slider');
+        let pTotal = 0;
+        pSliders.forEach(s => {
+            const val = parseInt(s.value) || 0;
+            const id = s.id.replace('-slider','');
+            const label = document.getElementById(id + '-val');
+            if(label) label.innerText = val;
+            pTotal += val;
+        });
+        document.getElementById('peer-total').innerText = pTotal;
+    }
+
+    // attach events
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.academic-slider, .peer-slider').forEach(slider => {
+            slider.addEventListener('input', updateTotals);
+        });
+        updateTotals(); // initial
+    });
+    </script>
+
+
+    {% if results %}
+    <div style="margin-top:20px; background: rgba(255,255,255,0.95); padding:40px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.12);">
+        <h3>📊 Results</h3>
+        <br>
+        <p><strong>Academic Stress Score:</strong> {{ results.academic_total }} / {{ (academic_questions|length * 3) }}</p>
+        <p><strong>Peer Pressure Score:</strong> {{ results.peer_total }} / {{ (peer_questions|length * 3) }}</p>
+        <p><strong>Text Sentiment:</strong> {{ results.text_sentiment }} (Confidence: {{ "%.2f"|format(results.text_confidence) }})</p>
+        <br>
+        <p><strong>Combined Stress Score:</strong> {{ "%.2f"|format(results.combined_score) }}</p>
+        <p><strong>Overall Stress Level:</strong> {{ results.stress_level }}</p>
+
+        <h4 style="margin-top:12px;">⚠ Precautions</h4>
+        <ul>
+            <li>This tool is for informational purposes only and is not a medical diagnosis.</li>
+            <li>If you have high stress levels, please talk to a counselor, teacher, or trusted adult.</li>
+        </ul>
+
+        <h4 style="margin-top:12px;">💡 Recommendations</h4>
+        {% if results.stress_level == 'High' %}
+        <ul>
+            <li>Take breaks from study and social media.</li>
+            <li>Practice mindfulness and relaxation exercises.</li>
+            <li>Discuss stress with a trusted adult or counselor.</li>
+        </ul>
+        {% elif results.stress_level == 'Moderate' %}
+        <ul>
+            <li>Manage time better and avoid procrastination.</li>
+            <li>Stay physically active and maintain sleep hygiene.</li>
+            <li>Talk to friends or family about your concerns.</li>
+        </ul>
+        {% else %}
+        <ul>
+            <li>Keep a healthy routine.</li>
+            <li>Maintain balance between academics and leisure.</li>
+            <li>Keep open communication with friends and family.</li>
+        </ul>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
