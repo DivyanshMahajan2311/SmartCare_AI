@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="active">
+    <h2 style="text-align:center; color:#ff3b9f; margin-bottom:20px;">Live Emotion Detection 🌈</h2>
+    
+    <div style="display:flex; justify-content:center; align-items:center; flex-direction:column; gap:20px;">
+        <!-- Video Stream -->
+        <div style="position:relative; width:640px; max-width:90%; border-radius:15px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,0.2);">
+            <img id="video-stream" src="{{ url_for('video') }}" style="width:100%; display:block; border-radius:15px;">
+            <!-- Emotion Overlay -->
+            <div id="emotion-overlay" style="
+                position:absolute;
+                top:15px;
+                left:15px;
+                font-size:2rem;
+                font-weight:bold;
+                color:#00ff00;
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+            ">
+                <!-- Detecting... -->
+            </div>
+        </div>
+
+        <!-- Emotion Info / Instructions -->
+        <div style="max-width:640px; text-align:center; color:#333; background: rgba(255,255,255,0.85); padding:15px 20px; border-radius:15px; box-shadow:0 6px 15px rgba(0,0,0,0.1);">
+            <p>Look at the camera and let SmartCare AI analyze your facial expressions to identify your current emotion. 💖</p>
+            <p>The detected emotion will appear in green overlay on the video above.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+// Update the emotion overlay every 1 second by refreshing the image src
+const videoImg = document.getElementById('video-stream');
+const emotionOverlay = document.getElementById('emotion-overlay');
+
+function refreshStream() {
+    const timestamp = new Date().getTime();
+    videoImg.src = "{{ url_for('video') }}" + "?t=" + timestamp;
+}
+
+setInterval(refreshStream, 1000);
+
+// Optional: Smooth fade for emotion overlay (if DeepFace updates)
+</script>
+{% endblock %}

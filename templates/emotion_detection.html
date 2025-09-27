@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<section id="emotion-detection" class="active">
+    <h2>Emotion Detection</h2>
+    <p>Select how you want to detect emotions:</p>
+    
+    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:20px;">
+        <a href="{{ url_for('face_emotion') }}">
+        <button style="width: 300px; height: 200px; font-size: larger; background-color: red; color: white; border: 1px dashed black;" class="emotion-option-btn" data-method="face">Emotion by Face</button>
+        </a>
+        <button style="width: 300px; height: 200px; font-size: larger; background-color: orange; color: white; border: 1px dashed black;" class="emotion-option-btn" data-method="audio">Emotion by Audio</button>
+        <button style="width: 300px; height: 200px; font-size: larger; background-color: green; color: white; border: 1px dashed black;" class="emotion-option-btn" data-method="text">Emotion by Text (MCQs)</button>
+    </div>
+</section>
+
+<script>
+// Temporary handlers for the buttons
+document.querySelectorAll('.emotion-option-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+        const method = btn.dataset.method;
+        alert("You chose: " + method.toUpperCase());
+    });
+});
+</script>
+{% endblock %}
