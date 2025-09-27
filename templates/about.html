@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block content %}
+<section id="about" class="active" style="animation: fadeIn 0.6s ease;">
+
+  <!-- center container so boxes are readable on wide screens -->
+  <div style="max-width:1100px; margin: 0 auto; padding: 12px;">
+
+    <!-- HERO / OVERVIEW -->
+    <div class="care-card" style="margin-bottom:18px; width:100%; height: 150px;">
+      <h2 style="color:#ff3b9f; margin-bottom:8px;">SmartCare AI for Teens</h2>
+      <p style="font-size:1rem; line-height:1.6;">
+        SmartCare AI is a friendly, research-informed digital companion created to help teenagers build healthy habits, understand bodily changes,
+        manage emotions and academic stress, and access age-appropriate guidance — all in a safe and private environment.
+      </p>
+    </div>
+
+    <!-- MISSION -->
+    <div class="care-card" style="margin-bottom:18px; width:100%; height: 150px;">
+      <h3 style="color:#ff3b9f; margin-bottom:8px;">Mission & Vision</h3>
+      <p style="line-height:1.6;">
+        <strong>Mission:</strong> Empower teens with accurate, stigma-free, and practical health guidance so they can make informed choices and seek help when needed.
+      </p>
+      <p style="line-height:1.6;">
+        <strong>Vision:</strong> A world where adolescents have trustworthy digital tools to support their physical and emotional wellbeing.
+      </p>
+    </div>
+
+    <!-- KEY FEATURES (each feature its own box) -->
+    <div class="care-card" style="margin-bottom:18px; width:100%;  height: 500px;">
+      <h3 style="color:#ff3b9f; margin-bottom:8px;">Key Features</h3>
+
+      <div style="margin-top:10px;">
+        <div style="background:#fff0fb; padding:12px; border-radius:10px; margin-bottom:10px;">
+          <strong>Symptom Checker</strong>
+          <div style="margin-top:6px; line-height:1.5;">Pick symptoms to get ranked likely conditions, practical advice, and recommended specialists. Educational only — not a diagnosis.</div>
+        </div>
+
+        <div style="background:#fff8e6; padding:12px; border-radius:10px; margin-bottom:10px;">
+          <strong>Personal Health Tracker</strong>
+          <div style="margin-top:6px; line-height:1.5;">Log height, weight, BMI, cycle length, mood and sleep. Save entries, view trends and export CSV summaries for care providers.</div>
+        </div>
+
+        <div style="background:#fff0f7; padding:12px; border-radius:10px; margin-bottom:10px;">
+          <strong>Interactive Chatbot</strong>
+          <div style="margin-top:6px; line-height:1.5;">FAQ-driven guidance with optional external API integration for more natural conversations when enabled.</div>
+        </div>
+
+        <div style="background:#fff; padding:12px; border-radius:10px; margin-bottom:10px;">
+          <strong>Mental Health Tools</strong>
+          <div style="margin-top:6px; line-height:1.5;">PHQ-9 screening, peer-pressure assessment, and sentiment analysis to spot early signals and suggest next steps.</div>
+        </div>
+
+        <div style="background:#fff8f0; padding:12px; border-radius:10px; margin-bottom:10px;">
+          <strong>Real-time Emotion Detection (Optional)</strong>
+          <div style="margin-top:6px; line-height:1.5;">Camera-based emotion awareness (updates at safe intervals). This feature is optional and clearly labeled for transparency.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="care-card" style="margin-bottom:18px; width:100%;  height: 200px;">
+      <h3 style="color:#ff3b9f; margin-bottom:8px;">How SmartCare Works</h3>
+      <ol style="line-height:1.7; margin-left:18px;">
+        <li><strong>Sign up or use Guest mode:</strong> Create a private account or use Guest mode to avoid persistent identifiers.</li>
+        <li><strong>Track quickly:</strong> Log symptoms, cycles, mood and sleep in a few taps.</li>
+        <li><strong>Analyze:</strong> Use the Symptom Checker for ranked possibilities and guided advice.</li>
+        <li><strong>Share safely:</strong> Export a clear CSV summary to show to a clinician if desired.</li>
+        <li><strong>Repeat & improve:</strong> Regular tracking increases the usefulness of trends and recommendations.</li>
+      </ol>
+    </div>
+
+    <!-- BENEFITS -->
+    <div class="care-card" style="margin-bottom:18px; width:100%; height: 150px;">
+      <h3 style="color:#ff3b9f; margin-bottom:8px;">Benefits for Teens & Parents</h3>
+      <p style="line-height:1.6;">
+        SmartCare encourages self-awareness and timely action. It offers destigmatized information, basic mental-health screening, and practical next steps
+        — supporting teens and giving parents controlled visibility through a dedicated Parent mode that limits access to sensitive areas.
+      </p>
+    </div>
+
+    <!-- PRIVACY & SAFETY -->
+    <div class="care-card" style="margin-bottom:18px; padding: 35px; width:100%; height: 230px;">
+      <h3 style="color:#ff3b9f; margin-bottom:8px;">Privacy & Safety</h3>
+      <ul style="line-height:1.6;">
+        <li><strong>Local-first storage:</strong> Data is stored locally in SQLite by default. Users may export or delete their data.</li>
+        <li><strong>Guest mode:</strong> Use without creating persistent personal identifiers.</li>
+        <li><strong>Non-diagnostic intent:</strong> The app is educational — always encourage users to consult health professionals for diagnosis.</li>
+        <li><strong>Parental controls:</strong> Supports restricted Parent mode so teens retain private access to sensitive modules.</li>
+        <li><strong>Production advice:</strong> For production, use HTTPS, a managed DB, encryption, and robust authentication (OAuth, session protection).</li>
+      </ul>
+    </div>
+
+    <!-- TECH STACK -->
+    <div class="care-card" style="margin-bottom:18px; padding: 30px; width:100%; height: 230px;">
+      <h3 style="color:#ff3b9f; margin-bottom:8px;">Tech Stack & Architecture</h3>
+      <p style="line-height:1.6;">
+        <strong>Frontend:</strong> Flask + Jinja templates, responsive CSS (prototype uses inline styles).<br>
+        <strong>Optional Rapid UI:</strong> Streamlit used for prototyping — can be embedded for convenience.<br>
+        <strong>Backend:</strong> Flask routes, SQLite for local use, joblib/scikit-learn for ML models.<br>
+        <strong>Vision & ML:</strong> DeepFace for face-based emotion detection, scikit-learn for classical models, optional LLM APIs for chatbot enhancements.<br>
+        <strong>Deployment:</strong> Docker + nginx + gunicorn recommended for production; migrate to Postgres/MySQL for concurrency and backups.
+      </p>
+    </div>
+
+    <!-- CONTACT & FAQ -->
+    <div class="care-card" style="margin-bottom:18px; width:100%; padding: 25px; height: 200px;">
+      <h3 style="color:#ff3b9f; margin-bottom:8px;">Get Involved & FAQ</h3>
+
+      <div style="margin-top:10px;">
+        <strong>Q: Is SmartCare a medical service?</strong>
+        <p>A: No — SmartCare provides educational guidance and tools. It is not a substitute for professional medical advice.</p>
+
+        <strong>Q: Where is my data stored?</strong>
+        <p>A: By default data is stored locally (SQLite). You may export CSVs and delete your data. For production, store encrypted on a secure server.</p>
+
+        <strong>Q: Can parents see everything?</strong>
+        <p>A: No. Parent mode provides limited access. Teens retain full access to most modules to protect privacy.</p>
+      </div>
+    </div>
+
+    <!-- CREDITS -->
+    <div class="care-card" style="margin-bottom:30px; width:100%; height: 150px;">
+      <h4 style="color:#ff3b9f; margin-bottom:8px;">Credits</h4>
+      <p style="line-height:1.6;">
+        Built by the SmartCare team. Uses open-source tools: Flask, Streamlit (prototype), scikit-learn, DeepFace and more. Thank you to testers and advisors.
+      </p>
+    </div>
+
+  </div> <!-- /container -->
+
+</section>
+{% endblock %}
