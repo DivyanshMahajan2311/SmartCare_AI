@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<section id="depression-detection" class="active">
+    <h2>Depression Detection (PHQ-9)</h2>
+    <p>Answer the following questions honestly. Choose 0–3 for each.</p>
+
+    <form method="post" id="phq-form" style="margin-top:18px;">
+        {% for idx, q in enumerate(questions, start=1) %}
+        <div style="background: rgba(255,255,255,0.95); padding:12px; border-radius:10px; margin-bottom:12px; box-shadow: 0 6px 14px rgba(0,0,0,0.08);">
+            <strong>{{ q }}</strong>
+            <div style="margin-top:8px; display:flex; gap:12px; flex-wrap:wrap;">
+                {% for val, label in options.items() %}
+                <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="radio" name="q{{ idx }}" value="{{ val }}"
+                        {% if responses and responses[idx-1] == val %}checked{% endif %}>
+                    <span>{{ val }} - {{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div style="margin-top:10px;">
+            <button type="submit" style="padding:10px 16px; border-radius:12px; border:none; cursor:pointer; background:#ff6ec7; color:#fff; font-weight:700;">
+                Submit
+            </button>
+        </div>
+    </form>
+
+    {% if score is not none %}
+    <div style="margin-top:20px; background: rgba(255,255,255,0.95); padding:40px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.12);">
+        <h3>Results</h3>
+        <p><strong>PHQ-9 Score:</strong> {{ score }}/27</p>
+        <p><strong>Interpretation:</strong> {{ result_text }}</p>
+
+        <h4 style="margin-top:12px;">Recommended Precautions / Actions</h4>
+        <ul>
+            {% for item in advice %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+
+        <div style="margin-top:12px;">
+            <strong>Note:</strong> This is a self-check for awareness only. If concerned, consult a mental health professional.
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>Helplines (examples):</strong>
+            <ul>
+                <li>India: 1800-599-0019 (iCall)</li>
+                <li>International: Suicide Crisis Helpline: +1-650-961-1900</li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
